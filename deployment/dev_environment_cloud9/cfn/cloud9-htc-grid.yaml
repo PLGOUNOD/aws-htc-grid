@@ -201,10 +201,6 @@ Resources:
                 instance = ec2.describe_instances(Filters=[{'Name': 'tag:aws:cloud9:environment','Values': [event['ResourceProperties']['EnvironmentId']]}])['Reservations'][0]['Instances'][0]
                 print(f'instance: {instance}')
 
-                volume_id = instance['BlockDeviceMappings'][0]['Ebs']['VolumeId']
-                print(f'Volume Id {volume_id}')
-                ec2.modify_volume(VolumeId=volume_id, Size=100)
-                print('Changed Volume to 100GB')
 
                 # Create the IamInstanceProfile request object
                 iam_instance_profile = {
@@ -262,6 +258,12 @@ Resources:
                       print(f'response - associate_iam_instance_profile: {response}')
                   except Exception as e:
                       print(e)
+
+                print('Modifying EBS volume')
+                volume_id = instance['BlockDeviceMappings'][0]['Ebs']['VolumeId']
+                print(f'Volume Id {volume_id}')
+                ec2.modify_volume(VolumeId=volume_id, Size=100)
+                print('Changed Volume to 100GB')
 
 
                 responseData = {'Success': 'Started bootstrapping for instance: '+instance['InstanceId']}
